@@ -1,6 +1,6 @@
-# 🎮 Game Boy Emulator — Java
+# 🎮 JavaBoy — Emulador de Game Boy y GameBoy Color hecho en java
 
-Emulador completo del Game Boy DMG con audio arreglado, launcher gráfico y sistema de guardado.
+Emulador completo del Game Boy  y Game Boy Color programado en java
 
 ## Compilar y ejecutar (3 pasos)
 
