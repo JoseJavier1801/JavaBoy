@@ -56,14 +56,4 @@ src/main/java/com/emulator/
 └── ui/                   ← Launcher + ventana de juego (Swing)
 ```
 
-## Compatibilidad MBC
-
-| Tipo | Juegos ejemplo |
-|------|---------------|
-| NoMBC | Tetris, Dr. Mario |
-| MBC1  | Super Mario Land, Kirby |
-| MBC2  | Pokémon Red/Blue (pequeños) |
-| MBC3  | Pokémon Gold/Silver, Zelda Link's Awakening |
-| MBC5  | Pokémon Crystal, Mario Bros Deluxe |
-
-Las ROMs no están incluidas. Usa tus propias copias legales (`.gb`).
+Las ROMs no están incluidas. Usa tus propias copias legales.
