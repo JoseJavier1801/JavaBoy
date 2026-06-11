@@ -1,36 +1,10 @@
-# 🎮 Game Boy Emulator — Java
+# 🎮 JavaBoy — Emulador de Game Boy y GameBoy Color hecho en java
 
-Emulador completo del Game Boy DMG con audio arreglado, launcher gráfico y sistema de guardado.
+Emulador completo del Game Boy  y Game Boy Color programado en java
 
-## Compilar y ejecutar (3 pasos)
+## Compilar y ejecutar 
 
-### Linux / macOS
-```bash
-# 1. Instalar JDK si no lo tienes
-sudo apt install default-jdk        # Ubuntu/Debian
-brew install openjdk@17             # macOS
-
-# 2. Compilar
-chmod +x build.sh && ./build.sh
-
-# 3. Ejecutar
-java -jar GameBoyEmulator.jar
-# o doble-clic en GameBoyEmulator.jar
-```
-
-### Windows
-```bat
-REM 1. Instalar JDK
-winget install Microsoft.OpenJDK.17
-
-REM 2. Compilar (doble-clic en build.bat o desde cmd)
-build.bat
-
-REM 3. Ejecutar
-javaw -jar GameBoyEmulator.jar
-```
-
-### Con Maven (alternativo)
+### Con Maven
 ```bash
 mvn package -q
 java -jar target/GameBoyEmulator.jar
@@ -39,7 +13,7 @@ java -jar target/GameBoyEmulator.jar
 ## Al abrirlo
 
 Al ejecutar sin argumentos, aparece el **Launcher**:
-- Arrastra un fichero `.gb` a la ventana, o
+- Arrastra un fichero `.gb` o `.gbc` a la ventana, o
 - Haz clic en **Abrir ROM…** para elegir con el explorador
 - Las ROMs recientes se guardan automáticamente
 
@@ -82,14 +56,4 @@ src/main/java/com/emulator/
 └── ui/                   ← Launcher + ventana de juego (Swing)
 ```
 
-## Compatibilidad MBC
-
-| Tipo | Juegos ejemplo |
-|------|---------------|
-| NoMBC | Tetris, Dr. Mario |
-| MBC1  | Super Mario Land, Kirby |
-| MBC2  | Pokémon Red/Blue (pequeños) |
-| MBC3  | Pokémon Gold/Silver, Zelda Link's Awakening |
-| MBC5  | Pokémon Crystal, Mario Bros Deluxe |
-
-Las ROMs no están incluidas. Usa tus propias copias legales (`.gb`).
+Las ROMs no están incluidas. Usa tus propias copias legales.
