@@ -104,6 +104,7 @@ public class GameBoy implements Runnable {
     public void setPaused(boolean p) { paused  = p; }
     public boolean isPaused()        { return paused; }
     public GBCMode getGBCMode()      { return gbcMode; }
+    public com.emulator.ppu.PPU getPPU() { return ppu; }
     public APU     getAPU()           { return apu; }
     public String  getRomPath()       { return romPath; }
     public GameBoyWindow window()    { return window; }

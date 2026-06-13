@@ -12,7 +12,7 @@ import com.emulator.memory.MemoryBus;
  */
 public class CPU {
 
-    private final Registers regs;
+    private final Registers  regs;
     private final Interrupts irq;
     private final MemoryBus  bus;
 

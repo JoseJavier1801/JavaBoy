@@ -33,15 +33,19 @@ public class GameBoyWindow extends JFrame {
 
     // ── DMG palettes (6 options) ──────────────────────────────────────────────
     public static final int[][] DMG_PALETTES = {
-        {0xFF9BBC0F,0xFF8BAC0F,0xFF306230,0xFF0F380F}, // Verde GB clásico
-        {0xFFE8E8E8,0xFFA0A0A0,0xFF585858,0xFF101010}, // Escala de grises
-        {0xFFF5E8B0,0xFFD4B060,0xFF906820,0xFF402800}, // Sepia / Dorado
-        {0xFF00FF88,0xFF00CC66,0xFF009944,0xFF003318}, // Verde neón
-        {0xFFFFD0D0,0xFFFF6060,0xFF880000,0xFF200000}, // Rojo retro
-        {0xFFD0D8FF,0xFF7090E0,0xFF204090,0xFF080820}, // Azul fría
+        {0xFF9BBC0F,0xFF8BAC0F,0xFF306230,0xFF0F380F}, // 0: Verde GB clásico
+        {0xFFE8E8D0,0xFFA8A888,0xFF505030,0xFF101008}, // 1: Gris cálido
+        {0xFFFFF6D3,0xFFF9A875,0xFFEB6B6F,0xFF7C3F58}, // 2: Pokémon GBC (rojo/coral)
+        {0xFF8BE5FF,0xFF608FCF,0xFF20408F,0xFF040C2C}, // 3: Azul Pokémon (azul)
+        {0xFFE0F8D0,0xFF88C070,0xFF346856,0xFF081820}, // 4: Verde agua GBC
+        {0xFFF5E8B0,0xFFD4B060,0xFF906820,0xFF402800}, // 5: Sepia / Dorado
+        {0xFF00FF88,0xFF00CC66,0xFF009944,0xFF003318}, // 6: Verde neón
+        {0xFFFFD0D0,0xFFFF6060,0xFF880000,0xFF200000}, // 7: Rojo retro
+        {0xFFD0D8FF,0xFF7090E0,0xFF204090,0xFF080820}, // 8: Azul fría
     };
     static final String[] PALETTE_NAMES = {
-        "Verde clásico GB","Escala de grises","Sepia / Dorado",
+        "Verde clásico GB","Gris cálido","Pokémon Rojo/Fuego",
+        "Pokémon Azul/Agua","Verde agua GBC","Sepia / Dorado",
         "Verde neón","Rojo retro","Azul fría"
     };
     static final String[] FILTER_NAMES = {
@@ -111,7 +115,16 @@ public class GameBoyWindow extends JFrame {
         gamePanel.setKeepAspect(cfg.keepAspect);
         gamePanel.setShowGrid(cfg.showGrid);
         gamePanel.setBCS(cfg.brightness, cfg.contrast, cfg.saturation);
-        if (mode == GBCMode.DMG) gamePanel.setPalette(DMG_PALETTES[cfg.dmgPalette]);
+        // Apply palette to GamePanel (visual post-processing filter)
+        // For forceGBC: also push palette to PPU so it renders in colour
+        gamePanel.setPalette(null);  // reset first
+        if (cfg.forceGBC && mode == GBCMode.DMG) {
+            // Update PPU to use chosen palette colours
+            gb.getPPU().setDMGColorized(true, DMG_PALETTES[
+                Math.max(0, Math.min(cfg.dmgPalette, DMG_PALETTES.length-1))]);
+        } else if (mode == GBCMode.DMG) {
+            gamePanel.setPalette(DMG_PALETTES[cfg.dmgPalette]);
+        }
         applyScale(cfg.scale);
         sFps.setVisible(cfg.showFPS);
         statusPanel.setVisible(cfg.showStatusBar);
@@ -255,10 +268,16 @@ public class GameBoyWindow extends JFrame {
             + "Reinicia la ROM para que el cambio tenga efecto.");
         forceGBC.addActionListener(e -> {
             cfg.forceGBC = forceGBC.isSelected();
+            // Si paleta 0 (verde clásico = igual a DMG), cambiar a paleta visible
+            if (cfg.forceGBC && cfg.dmgPalette == 0) cfg.dmgPalette = 2;
             saveSettings();
+            String palName = PALETTE_NAMES[Math.min(cfg.dmgPalette, PALETTE_NAMES.length-1)];
             int r = JOptionPane.showConfirmDialog(this,
-                "El cambio se aplica al reiniciar la ROM.\n¿Reiniciar ahora?",
-                "Modo GBC", JOptionPane.YES_NO_OPTION);
+                "Modo color " + (cfg.forceGBC ? "activado" : "desactivado")
+                + (cfg.forceGBC ? " con paleta: " + palName : "") + "."
+                + "\nReinicia la ROM para aplicar el cambio."
+                + "\n\n¿Reiniciar ahora?",
+                "Modo color para juegos GB", JOptionPane.YES_NO_OPTION);
             if (r == JOptionPane.YES_OPTION) restartROM();
         });
         m.add(forceGBC);

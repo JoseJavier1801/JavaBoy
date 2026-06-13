@@ -134,7 +134,7 @@ public class EmulatorSettings {
         // Clamp values
         scale        = Math.max(1, Math.min(4,   scale));
         filterMode   = Math.max(0, Math.min(6,   filterMode));
-        dmgPalette   = Math.max(0, Math.min(5,   dmgPalette));
+        dmgPalette   = Math.max(0, Math.min(8,   dmgPalette));
         brightness   = Math.max(0, Math.min(200, brightness));
         contrast     = Math.max(0, Math.min(200, contrast));
         saturation   = Math.max(0, Math.min(200, saturation));
