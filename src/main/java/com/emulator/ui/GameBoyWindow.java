@@ -32,7 +32,7 @@ public class GameBoyWindow extends JFrame {
     private static final Color C_STBG  = new Color(236,233,216);
 
     // ── DMG palettes (6 options) ──────────────────────────────────────────────
-    static final int[][] DMG_PALETTES = {
+    public static final int[][] DMG_PALETTES = {
         {0xFF9BBC0F,0xFF8BAC0F,0xFF306230,0xFF0F380F}, // Verde GB clásico
         {0xFFE8E8E8,0xFFA0A0A0,0xFF585858,0xFF101010}, // Escala de grises
         {0xFFF5E8B0,0xFFD4B060,0xFF906820,0xFF402800}, // Sepia / Dorado
