@@ -1,7 +1,9 @@
 package com.emulator;
 
 /**
- * Detección Game boy o Game boy Color :
+ * Modo de hardware — ahora incluye GBA.
+ * Detección:
+ *   GBA:  extensión .gba
  *   GBC:  byte 0x0143 == 0x80 o 0xC0
  *   DMG:  resto
  */

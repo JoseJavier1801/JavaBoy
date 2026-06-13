@@ -32,11 +32,30 @@ public class PPU {
     };
 
     // ── Modo hardware ─────────────────────────────────────────────────────────
-    private GBCMode gbcMode = GBCMode.DMG;
+    private GBCMode gbcMode       = GBCMode.DMG;
+    // When true: ROM is DMG but user wants colorized output.
+    // We use the DMG renderer but replace DMG_COLORS with dmgForcedColors.
+    private boolean dmgColorized  = false;
+    private int[]   dmgForcedColors = DMG_COLORS.clone();
 
     public void setMode(GBCMode m) {
         this.gbcMode = m;
         if (m == GBCMode.GBC) initGBCPalettes();
+    }
+
+    /**
+     * Enable colorized DMG mode: uses DMG renderer but with custom 4-colour palette.
+     * Called when forceGBC=true on a DMG ROM.
+     * @param colors 4 ARGB colours from lightest to darkest (same order as DMG_COLORS)
+     */
+    public void setDMGColorized(boolean on, int[] colors) {
+        dmgColorized = on;
+        if (on && colors != null && colors.length >= 4)
+            dmgForcedColors = colors.clone();
+        else
+            dmgForcedColors = DMG_COLORS.clone();
+        // Stay in DMG render mode regardless of gbcMode
+        if (on) gbcMode = GBCMode.DMG;
     }
 
     /**
@@ -168,7 +187,7 @@ public class PPU {
 
     private void renderBGDMG() {
         if ((LCDC & 0x01) == 0) {
-            for (int x = 0; x < WIDTH; x++) framebuffer[LY * WIDTH + x] = DMG_COLORS[0];
+            for (int x = 0; x < WIDTH; x++) framebuffer[LY * WIDTH + x] = dmgColor(0);
             return;
         }
         int tileMap  = (LCDC & 0x08) != 0 ? 0x9C00 : 0x9800;
@@ -184,7 +203,7 @@ public class PPU {
             int bit = 7 - (xOff & 7);
             int col = ((hi >> bit) & 1) << 1 | ((lo >> bit) & 1);
             bgColIdx[x] = col;
-            framebuffer[LY * WIDTH + x] = DMG_COLORS[(BGP >> (col * 2)) & 3];
+            framebuffer[LY * WIDTH + x] = dmgColor((BGP >> (col * 2)) & 3);
         }
     }
 
@@ -203,7 +222,7 @@ public class PPU {
             int bit = 7 - (wx & 7);
             int col = ((hi >> bit) & 1) << 1 | ((lo >> bit) & 1);
             bgColIdx[x] = col;
-            framebuffer[LY * WIDTH + x] = DMG_COLORS[(BGP >> (col * 2)) & 3];
+            framebuffer[LY * WIDTH + x] = dmgColor((BGP >> (col * 2)) & 3);
         }
         windowLine++;
     }
@@ -236,7 +255,7 @@ public class PPU {
 
     private int[] buildDMGObjPal(int reg) {
         int[] p = new int[4];
-        for (int i = 0; i < 4; i++) p[i] = DMG_COLORS[(reg >> (i * 2)) & 3];
+        for (int i = 0; i < 4; i++) p[i] = dmgColor((reg >> (i * 2)) & 3);
         return p;
     }
 
@@ -257,6 +276,11 @@ public class PPU {
                     objArgb[p][c] = rgb555toARGB(objPalData[p*8 + c*2], objPalData[p*8 + c*2 + 1]);
             objPalDirty = false;
         }
+    }
+
+    /** Returns the active DMG colour for index 0-3 (respects colorized mode) */
+    private int dmgColor(int idx) {
+        return dmgColorized ? dmgForcedColors[idx & 3] : DMG_COLORS[idx & 3];
     }
 
     /** RGB555 little-endian → ARGB int */

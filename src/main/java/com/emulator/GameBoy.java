@@ -41,12 +41,19 @@ public class GameBoy implements Runnable {
     public GameBoy(String romPath) throws IOException {
         this.romPath = romPath;
         cart        = Cartridge.load(romPath);
-        // forceGBC: treat DMG ROMs as GBC (colour palettes, etc.)
-        boolean fgbc = com.emulator.ui.EmulatorSettings.get().forceGBC;
-        gbcMode     = (fgbc && cart.getGBCMode() == GBCMode.DMG) ? GBCMode.GBC : cart.getGBCMode();
+        // gbcMode from ROM header (real GBC ROMs stay GBC regardless of forceGBC)
+        gbcMode     = cart.getGBCMode();
         joypad      = new Joypad();
         ppu         = new PPU();
         ppu.setMode(gbcMode);
+        // forceGBC on DMG ROM: use colorized DMG renderer with user palette
+        com.emulator.ui.EmulatorSettings cfg = com.emulator.ui.EmulatorSettings.get();
+        if (cfg.forceGBC && gbcMode == GBCMode.DMG) {
+            int[] pal = com.emulator.ui.GameBoyWindow.DMG_PALETTES[
+                Math.max(0, Math.min(cfg.dmgPalette,
+                    com.emulator.ui.GameBoyWindow.DMG_PALETTES.length - 1))];
+            ppu.setDMGColorized(true, pal);
+        }
         apu         = new APU();
         timer       = new Timer();
         bus         = new MemoryBus(cart, ppu, apu, timer, joypad, gbcMode);

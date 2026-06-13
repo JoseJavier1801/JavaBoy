@@ -251,7 +251,7 @@ public class GameBoyWindow extends JFrame {
         JCheckBoxMenuItem forceGBC = new JCheckBoxMenuItem(
             "Modo GBC en juegos GB (forzar colores)", cfg.forceGBC);
         forceGBC.setToolTipText(
-            "Activa las paletas de color GBC en juegos de Game Boy clásico.\n"
+            "Aplica la paleta DMG seleccionada sobre juegos de Game Boy clásico.\n"
             + "Reinicia la ROM para que el cambio tenga efecto.");
         forceGBC.addActionListener(e -> {
             cfg.forceGBC = forceGBC.isSelected();
